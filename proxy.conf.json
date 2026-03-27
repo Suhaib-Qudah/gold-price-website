@@ -1,0 +1,9 @@
+[
+  {
+    "context": ["/api"],
+    "target": "https://starfish-app-m9o96.ondigitalocean.app",
+    "secure": true,
+    "changeOrigin": true
+  }
+]
+

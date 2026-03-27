@@ -1,0 +1,60 @@
+<section class="dashboard">
+  @if (!loading() && !error()) {
+    @if (latestPrice(); as price) {
+      <div class="header">
+        <div class="logo-container">
+          <img ngSrc="/logo.webp" width="140" height="140" alt="شعار النقابة"/>
+        </div>
+        <h1>Current Gold Pricing</h1>
+        <h2>التسعيرة الحالية لبيع الذهب</h2>
+        <p>الصادرة عن النقابة العامة لأصحاب محلات تجارة وصياغة الذهب والمجوهرات في المملكة الأردنية الهاشمية</p>
+        <div class="date-pill">
+          <span>التاريخ: {{ formatDate(price.publishedAt) }}</span>
+          <span class="separator">|</span>
+          <span> الساعة: {{ formatTime(currentTimestamp) }}</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        @for (karat of karats; track karat.label) {
+          <article class="card">
+            <div class="karat-circle">{{ karat.label }}</div>
+            <div class="prices">
+              <div class="row">
+                <span class="up">▲</span>
+                <span class="value">
+            {{ formatNumber(price[karat.sellKey]) }}
+          </span>
+                <span class="label">سعر البيع</span>
+              </div>
+              <div class="row">
+                <span class="down">▼</span>
+                <span class="value">
+            {{ formatNumber(price[karat.buyKey]) }}
+          </span>
+                <span class="label">سعر الشراء</span>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+
+      <p class="footer-note">
+        بناءً على طلب معالي وزير الصناعة والتجارة رقم 2 لسنة 1986
+      </p>
+    }
+  } @else {
+    @if (loading()) {
+      <div class="state">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>جاري تحميل التسعيرة...</p>
+      </div>
+    } @else if (error()) {
+      <div class="state error">
+        <p>{{ error() }}</p>
+        <button type="button" (click)="load()">إعادة المحاولة</button>
+      </div>
+    }
+  }
+</section>
+

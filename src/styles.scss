@@ -1,1 +1,27 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+
+:root {
+  --gold-primary: #e8c562;
+  --gold-gradient: linear-gradient(to bottom, #d4b04c 0%, #f1d98a 100%);
+  --card-bg: linear-gradient(180deg, #fdfbf2 0%, #f7f1d5 100%);
+  --text-dark: #3e3828;
+  --text-muted: #767676;
+  --border-color: #dcc075;
+  --surface: #f8f4e9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #fff;
+  font-family: 'Cairo', sans-serif;
+  color: var(--text-dark);
+  direction: rtl;
+}
+
+a {
+  color: inherit;
+}
