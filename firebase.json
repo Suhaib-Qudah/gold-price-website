@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "dahabpro-da5b1-f3e5d",
+    "public": "dist/gold-website/browser",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "**", "destination": "/index.html" }
+    ]
+  }
+}
+

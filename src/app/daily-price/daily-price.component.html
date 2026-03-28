@@ -1,4 +1,4 @@
-<section class="dashboard">
+<section class="dashboard" [attr.aria-busy]="loading()" aria-live="polite">
   @if (!loading() && !error()) {
     @if (latestPrice(); as price) {
       <div class="header">
@@ -6,12 +6,12 @@
           <img ngSrc="/logo.webp" width="140" height="140" alt="شعار النقابة"/>
         </div>
         <h1>Current Gold Pricing</h1>
-        <h2>التسعيرة الحالية لبيع الذهب</h2>
+        <h2>التسعيرة الحالية لبيع الذهب </h2>
         <p>الصادرة عن النقابة العامة لأصحاب محلات تجارة وصياغة الذهب والمجوهرات في المملكة الأردنية الهاشمية</p>
         <div class="date-pill">
           <span>التاريخ: {{ formatDate(price.publishedAt) }}</span>
           <span class="separator">|</span>
-          <span> الساعة: {{ formatTime(currentTimestamp) }}</span>
+          <span> الساعة: {{ formatTime(currentTimestamp()) }}</span>
         </div>
       </div>
 
@@ -25,14 +25,14 @@
                 <span class="value">
             {{ formatNumber(price[karat.sellKey]) }}
           </span>
-                <span class="label">سعر البيع</span>
+                <span class="label">سعر البيع </span>
               </div>
               <div class="row">
                 <span class="down">▼</span>
                 <span class="value">
             {{ formatNumber(price[karat.buyKey]) }}
           </span>
-                <span class="label">سعر الشراء</span>
+                <span class="label">سعر الشراء </span>
               </div>
             </div>
           </article>
@@ -47,7 +47,7 @@
     @if (loading()) {
       <div class="state">
         <div class="spinner" aria-hidden="true"></div>
-        <p>جاري تحميل التسعيرة...</p>
+        <p>جاري تحميل البيانات...</p>
       </div>
     } @else if (error()) {
       <div class="state error">

@@ -32,6 +32,12 @@ interface ApiResponse {
   data?: ApiCountry;
 }
 
+interface ApiCountriesResponse {
+  success: boolean;
+  message?: string;
+  data?: ApiCountry[];
+}
+
 export interface Country {
   id: number;
   name: string;
@@ -63,14 +69,56 @@ export interface DailyPriceResult {
 
 @Injectable({ providedIn: 'root' })
 export class DailyPriceService {
-  // Use relative base to work with the dev-server proxy (see proxy.conf.json)
-  private readonly apiBase = '/api/countries';
+  private readonly productionApiBase = 'https://starfish-app-m9o96.ondigitalocean.app/api/countries';
+  // Use proxy in dev, absolute URL in production hosting
+  private readonly apiBase = this.resolveApiBase();
 
   constructor(private readonly http: HttpClient) {}
 
+  private resolveApiBase(): string {
+    if (typeof window === 'undefined') {
+      return this.productionApiBase;
+    }
+
+    const host = window.location.hostname?.toLowerCase() ?? '';
+    const isLocal = host === 'localhost' || host === '127.0.0.1';
+    return isLocal ? '/api/countries' : this.productionApiBase;
+  }
+
+  getCountries(): Observable<Country[]> {
+    return this.http
+      .get<ApiCountriesResponse>(this.apiBase, {
+        headers: { Accept: 'application/json', 'X-CSRF-TOKEN': '' }
+      })
+      .pipe(
+        timeout(10000),
+        map((response) => {
+          if (!response.success || !response.data) {
+            throw new Error(response.message || 'Unexpected countries response.');
+          }
+
+          return response.data.map((country) => ({
+            id: country.id,
+            name: country.name,
+            code: country.code,
+            currency: country.currency
+          } satisfies Country));
+        }),
+        catchError((error: HttpErrorResponse | Error) => {
+          const message =
+            error instanceof HttpErrorResponse
+              ? error.message || 'Network error while fetching countries.'
+              : error.message || 'An unknown error occurred while fetching countries.';
+          return throwError(() => new Error(message));
+        })
+      );
+  }
+
   getPrices(countryCode = 'JO'): Observable<DailyPriceResult> {
     return this.http
-      .get<ApiResponse>(`${this.apiBase}/${countryCode}/prices`)
+      .get<ApiResponse>(`${this.apiBase}/${countryCode}/prices`, {
+        headers: { Accept: 'application/json' }
+      })
       .pipe(
         timeout(10000),
         map((response) => {
