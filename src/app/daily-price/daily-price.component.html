@@ -1,47 +1,152 @@
 <section class="dashboard" [attr.aria-busy]="loading()" aria-live="polite">
   @if (!loading() && !error()) {
     @if (latestPrice(); as price) {
-      <div class="header">
-        <div class="logo-container">
-          <img ngSrc="/logo.webp" width="140" height="140" alt="شعار النقابة"/>
+      <div class="gold-board" dir="rtl">
+        <div class="top-card">
+          <button type="button" class="icon-button top-action" aria-label="رجوع" disabled>
+            <span class="material-icons" aria-hidden="true">logout</span>
+          </button>
+
+          <div class="logo-wrap">
+            <img ngSrc="/logo.webp" width="62" height="62" alt="شعار المملكة الأردنية الهاشمية"/>
+          </div>
+
+          <div class="hero-text">
+            <h1>المملكة الأردنية الهاشمية</h1>
+            <h2>التسعيرة الحالية لبيع الذهب</h2>
+            <p>الصادرة عن النقابة العامة لأصحاب محلات تجارة وصياغة الذهب والمجوهرات</p>
+          </div>
+
+          <div class="date-pill">
+            <span>التاريخ: {{ formatDate(price.publishedAt) }}</span>
+            <span>الساعة: {{ formatTime(currentTimestamp()) }}</span>
+          </div>
         </div>
-        <h1>Current Gold Pricing</h1>
-        <h2>التسعيرة الحالية لبيع الذهب </h2>
-        <p>الصادرة عن النقابة العامة لأصحاب محلات تجارة وصياغة الذهب والمجوهرات في المملكة الأردنية الهاشمية</p>
-        <div class="date-pill">
-          <span>التاريخ: {{ formatDate(price.publishedAt) }}</span>
-          <span class="separator">|</span>
-          <span> الساعة: {{ formatTime(currentTimestamp()) }}</span>
+
+        <div class="price-table" role="table" aria-label="جدول أسعار الذهب">
+          <div class="table-head" role="row">
+            <div role="columnheader">العيار</div>
+            <div role="columnheader">سعر البيع</div>
+            <div role="columnheader">سعر الشراء</div>
+          </div>
+
+          @for (karat of karats; track karat.label; let last = $last) {
+            @if (karat.label !== "14K") {
+              <div class="table-row" role="row">
+                <div class="karat" role="cell">{{ karat.label }}</div>
+
+                <div class="sell value" role="cell">
+                  <span class="arrow material-icons" aria-hidden="true">arrow_upward</span>
+                  <span>{{ formatNumber(price[karat.sellKey]) }}</span>
+                </div>
+
+                <div class="buy value" role="cell">
+                  <span class="arrow material-icons" aria-hidden="true">arrow_downward</span>
+                  <span>{{ formatNumber(price[karat.buyKey]) }}</span>
+                </div>
+                @if (!last && karat.label !== "18K") {
+                  <div class="price-divider">
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                  </div>
+                  <div class="price-divider">
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                  </div>
+                  <div class="price-divider">
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                    <span class="dark"></span>
+                    <span class="gold"></span>
+                  </div>
+
+
+                }
+              </div>
+            }
+          }
+        </div>
+
+        <p class="note">بناءً على طلب معالي وزير الصناعة والتجارة رقم 2 لسنة 1986</p>
+
+        <div class="bottom-banner">
+          <button type="button" class="icon-button mute-button" aria-label="كتم الصوت" disabled>
+            <span class="material-icons" aria-hidden="true">campaign</span>
+          </button>
+
+          <span
+            class="banner-message"
+            [class.banner-slide-a]="bannerAnimationClass() === 'banner-slide-a'"
+            [class.banner-slide-b]="bannerAnimationClass() === 'banner-slide-b'"
+          >
+            {{ currentBannerMessage() }}
+          </span>
         </div>
       </div>
-
-      <div class="grid">
-        @for (karat of karats; track karat.label) {
-          <article class="card">
-            <div class="karat-circle">{{ karat.label }}</div>
-            <div class="prices">
-              <div class="row">
-                <span class="up">▲</span>
-                <span class="value">
-            {{ formatNumber(price[karat.sellKey]) }}
-          </span>
-                <span class="label">سعر البيع </span>
-              </div>
-              <div class="row">
-                <span class="down">▼</span>
-                <span class="value">
-            {{ formatNumber(price[karat.buyKey]) }}
-          </span>
-                <span class="label">سعر الشراء </span>
-              </div>
-            </div>
-          </article>
-        }
-      </div>
-
-      <p class="footer-note">
-        بناءً على طلب معالي وزير الصناعة والتجارة رقم 2 لسنة 1986
-      </p>
     }
   } @else {
     @if (loading()) {
@@ -50,7 +155,7 @@
         <p>جاري تحميل البيانات...</p>
       </div>
     } @else if (error()) {
-      <div class="state error">
+      <div class="state error" role="alert">
         <p>{{ error() }}</p>
         <button type="button" (click)="load()">إعادة المحاولة</button>
       </div>

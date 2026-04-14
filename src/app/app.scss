@@ -88,9 +88,7 @@
 }
 
 .app-main {
-  flex: 1;
-  display: flex;
-  justify-content: center;
+  width: 100%;
 
   @media screen and (min-width: 1600px) {
     min-width: 100%;

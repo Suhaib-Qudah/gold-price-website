@@ -32,9 +32,24 @@ export class DailyPriceComponent implements OnInit, OnDestroy {
   readonly latestPrice = signal<GoldPrice | null>(null);
   readonly previousPrice = signal<GoldPrice | null>(null);
   readonly currentTimestamp = signal(new Date());
+  readonly bannerMessages: string[] = [
+    'تم إلغاء التسعيرة الورقية',
+    'لا يوجد عروض على الذهب',
+    'التسعيرة المعتمدة هي التسعيرة الإلكترونية',
+    'للاستفسارات أو الشكاوى التواصل على رقم النقابة الرسمي 0777762999'
+  ];
+  readonly bannerMessageIndex = signal(0);
+  readonly currentBannerMessage = computed(
+    () => this.bannerMessages[this.bannerMessageIndex()] ?? ''
+  );
+  readonly bannerAnimationClass = computed(() =>
+    this.bannerMessageIndex() % 2 === 0 ? 'banner-slide-a' : 'banner-slide-b'
+  );
 
   private readonly refreshIntervalMs = 60 * 1000;
+  private readonly bannerIntervalMs = 10 * 1000;
   private refreshTimerId: number | null = null;
+  private bannerTimerId: number | null = null;
   private cachedCountries: Country[] = [];
   private readonly cachedPricesByCountry = new Map<string, DailyPriceResult>();
 
@@ -51,10 +66,12 @@ export class DailyPriceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.load();
     this.startAutoRefresh();
+    this.startBannerRotation();
   }
 
   ngOnDestroy(): void {
     this.stopAutoRefresh();
+    this.stopBannerRotation();
   }
 
   load(options?: { silent?: boolean }): void {
@@ -203,6 +220,27 @@ export class DailyPriceComponent implements OnInit, OnDestroy {
     }
   }
 
+  private startBannerRotation(): void {
+    this.stopBannerRotation();
+
+    if (this.bannerMessages.length <= 1) {
+      return;
+    }
+
+    this.bannerTimerId = window.setInterval(() => {
+      this.bannerMessageIndex.update(
+        (index) => (index + 1) % this.bannerMessages.length
+      );
+    }, this.bannerIntervalMs);
+  }
+
+  private stopBannerRotation(): void {
+    if (this.bannerTimerId !== null) {
+      window.clearInterval(this.bannerTimerId);
+      this.bannerTimerId = null;
+    }
+  }
+
   formatNumber(value?: number | null): string {
     if (value === undefined || value === null || Number.isNaN(value)) {
       return '--';
@@ -215,7 +253,7 @@ export class DailyPriceComponent implements OnInit, OnDestroy {
       return '--';
     }
     const date = new Date(value);
-    const parts = new Intl.DateTimeFormat('ar-JO-u-nu-arab', {
+    const parts = new Intl.DateTimeFormat('ar-JO-u-nu-latn', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
@@ -237,7 +275,7 @@ export class DailyPriceComponent implements OnInit, OnDestroy {
       return '--';
     }
     const date = new Date(value);
-    return new Intl.DateTimeFormat('ar-JO-u-nu-arab', {
+    return new Intl.DateTimeFormat('ar-JO-u-nu-latn', {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true
